@@ -4,7 +4,44 @@ import gleam/list
 import gleam/string
 import simplifile
 
-pub fn day1() {
+pub fn day1_part2() {
+  let assert Ok(input) = simplifile.read("./priv/input1.txt")
+
+  let lines =
+    input
+    |> string.trim()
+    |> string.split("\n")
+
+  let pairs = list.map(lines, fn(line) { string.split(line, "   ") })
+
+  let left =
+    list.map(pairs, fn(el) {
+      let assert [l, _] = el
+      let assert Ok(v) = int.parse(l)
+      v
+    })
+  let right =
+    list.map(pairs, fn(el) {
+      let assert [_, r] = el
+      let assert Ok(v) = int.parse(r)
+      v
+    })
+
+  let scores =
+    list.map(left, fn(el) {
+      let matches =
+        right
+        |> list.filter(fn(el2) { el == el2 })
+        |> list.length
+      el * matches
+    })
+
+  let sum = list.fold(scores, 0, fn(acc, cur) { acc + cur })
+
+  io.debug(sum)
+}
+
+pub fn day1_part1() {
   let assert Ok(input) = simplifile.read("./priv/input1.txt")
 
   let lines =
