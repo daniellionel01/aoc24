@@ -1,12 +1,45 @@
+import aoc24/lib
 import gleam/int
 import gleam/io
 import gleam/list
 import gleam/string
-import simplifile
 
-pub fn day1_part2() {
-  let assert Ok(input) = simplifile.read("./priv/input1.txt")
+pub fn main() {
+  io.println("")
 
+  let ex_p1 = example_input() |> day1_part1()
+  io.println("[day 1][part 1] example: " <> int.to_string(ex_p1))
+
+  let ex_p2 = example_input() |> day1_part1()
+  io.println("[day 1][part 2] example: " <> int.to_string(ex_p2))
+
+  io.println("")
+
+  let real_p1 = lib.puzzle_input(1) |> day1_part1()
+  io.println("[day 1][part 1] real: " <> int.to_string(real_p1))
+
+  let real_p2 = lib.puzzle_input(1) |> day1_part2()
+  io.println("[day 1][part 2] real: " <> int.to_string(real_p2))
+
+  io.println("")
+}
+
+pub fn example_input() {
+  let nl = "\n"
+  "3   4"
+  <> nl
+  <> "4   3"
+  <> nl
+  <> "2   5"
+  <> nl
+  <> "1   3"
+  <> nl
+  <> "3   9"
+  <> nl
+  <> "3   3"
+}
+
+pub fn day1_part2(input: String) {
   let lines =
     input
     |> string.trim()
@@ -38,12 +71,10 @@ pub fn day1_part2() {
 
   let sum = list.fold(scores, 0, fn(acc, cur) { acc + cur })
 
-  io.debug(sum)
+  sum
 }
 
-pub fn day1_part1() {
-  let assert Ok(input) = simplifile.read("./priv/input1.txt")
-
+pub fn day1_part1(input: String) {
   let lines =
     input
     |> string.trim()
@@ -75,7 +106,7 @@ pub fn day1_part1() {
 
   let sum = list.fold(diffs, 0, fn(acc, cur) { acc + cur })
 
-  io.debug(sum)
+  sum
 }
 
 fn pair_up(left: List(Int), right: List(Int), acc: List(#(Int, Int))) {

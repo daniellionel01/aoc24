@@ -1,14 +1,47 @@
+import aoc24/lib
 import gleam/int
 import gleam/io
 import gleam/list
 import gleam/option.{None, Some}
 import gleam/result
 import gleam/string
-import simplifile
 
-pub fn day2_part1() {
-  let assert Ok(input) = simplifile.read("./priv/input2.txt")
+pub fn main() {
+  io.println("")
 
+  let ex_p1 = example_input() |> day2_part1()
+  io.println("[day 2][part 1] example: " <> int.to_string(ex_p1))
+
+  let ex_p2 = example_input() |> day2_part1()
+  io.println("[day 2][part 2] example: " <> int.to_string(ex_p2))
+
+  io.println("")
+
+  let real_p1 = lib.puzzle_input(2) |> day2_part1()
+  io.println("[day 2][part 1] real: " <> int.to_string(real_p1))
+
+  let real_p2 = lib.puzzle_input(2) |> day2_part2()
+  io.println("[day 2][part 2] real: " <> int.to_string(real_p2))
+
+  io.println("")
+}
+
+pub fn example_input() {
+  let nl = "\n"
+  "7 6 4 2 1"
+  <> nl
+  <> "1 2 7 8 9"
+  <> nl
+  <> "9 7 6 2 1"
+  <> nl
+  <> "1 3 2 4 5"
+  <> nl
+  <> "8 6 4 4 1"
+  <> nl
+  <> "1 3 6 7 9"
+}
+
+pub fn day2_part1(input: String) {
   let line_to_level = fn(line: String) -> List(Int) {
     let digits =
       line
@@ -51,12 +84,10 @@ pub fn day2_part1() {
 
   let safe_levels = list.filter(levels, is_safe)
 
-  io.debug(list.length(safe_levels))
+  list.length(safe_levels)
 }
 
-pub fn day2_part2() {
-  let assert Ok(input) = simplifile.read("./priv/input2.txt")
-
+pub fn day2_part2(input: String) {
   let line_to_level = fn(line: String) -> List(Int) {
     let digits =
       line
@@ -108,7 +139,7 @@ pub fn day2_part2() {
       }
     })
 
-  io.debug(list.length(safe_levels))
+  list.length(safe_levels)
 }
 
 pub fn drop_index(lst: List(a), index: Int) -> List(a) {

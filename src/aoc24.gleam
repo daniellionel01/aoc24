@@ -1,6 +1,5 @@
-import aoc24/day2
+import gleam/io
 
 pub fn main() {
-  day2.day2_part1()
-  day2.day2_part2()
+  io.debug("hello")
 }
