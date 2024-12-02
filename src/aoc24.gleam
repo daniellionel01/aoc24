@@ -1,6 +1,6 @@
-import aoc24/day1
+import aoc24/day2
 
 pub fn main() {
-  day1.day1_part1()
-  day1.day1_part2()
+  day2.day2_part1()
+  day2.day2_part2()
 }
