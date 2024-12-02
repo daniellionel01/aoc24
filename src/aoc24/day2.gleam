@@ -111,16 +111,13 @@ pub fn day2_part2() {
   io.debug(list.length(safe_levels))
 }
 
-fn drop_index_rec(level: List(Int), store: List(Int), index: Int) {
-  let assert [head, ..rest] = level
-  case index {
-    0 -> list.append(store, rest)
-    _ -> drop_index_rec(rest, list.append(store, [head]), index - 1)
-  }
-}
-
-pub fn drop_index(level: List(Int), index: Int) {
-  drop_index_rec(level, [], index)
+pub fn drop_index(lst: List(a), index: Int) -> List(a) {
+  list.index_fold(lst, [], fn(acc, cur, idx) {
+    case index == idx {
+      True -> acc
+      False -> list.append(acc, [cur])
+    }
+  })
 }
 
 fn permutate_level(level: List(Int), acc: List(List(Int)), index: Int) {
