@@ -1,5 +1,5 @@
-import aoc24/day2
 import aoc24/lib
+import day2
 import gleam/list
 import gleam/string
 import gleeunit
