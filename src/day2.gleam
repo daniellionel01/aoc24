@@ -12,7 +12,7 @@ pub fn main() {
   let ex_p1 = example_input() |> day2_part1()
   io.println("[day 2][part 1] example: " <> int.to_string(ex_p1))
 
-  let ex_p2 = example_input() |> day2_part1()
+  let ex_p2 = example_input() |> day2_part2()
   io.println("[day 2][part 2] example: " <> int.to_string(ex_p2))
 
   io.println("")
