@@ -28,7 +28,7 @@ pub fn main() {
 
   io.println("")
 
-  let ex_p2 = example_input() |> part2()
+  let ex_p2 = example_input_2() |> part2()
   io.println(
     "[day "
     <> int.to_string(day)
@@ -51,6 +51,10 @@ pub fn example_input() {
   "xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))"
 }
 
+pub fn example_input_2() {
+  "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"
+}
+
 pub fn part1(input: String) {
   case input {
     "mul(" <> remaining -> {
@@ -65,18 +69,15 @@ pub fn part1(input: String) {
 
               case left, right {
                 Ok(x), Ok(y) -> {
-                  io.debug(el)
                   let mul = x * y
                   mul + part1(remaining)
                 }
                 _, _ -> {
-                  io.debug("continuing with: " <> remaining)
                   part1(remaining)
                 }
               }
             }
             _ -> {
-              io.debug("continuing with: " <> remaining)
               part1(remaining)
             }
           }
@@ -93,5 +94,49 @@ pub fn part1(input: String) {
 }
 
 pub fn part2(input: String) {
-  todo
+  case input {
+    "don't()" <> remaining -> {
+      let split = string.split(remaining, "do()")
+      case split {
+        [] -> part2(remaining)
+        [_, ..after] -> {
+          string.join(after, "do()")
+          |> part2()
+        }
+      }
+    }
+    "mul(" <> remaining -> {
+      let split = remaining |> string.split(")")
+      case split {
+        [] -> 0
+        [el, ..] -> {
+          case string.split(el, ",") {
+            [a, b] -> {
+              let left = int.parse(a)
+              let right = int.parse(b)
+
+              case left, right {
+                Ok(x), Ok(y) -> {
+                  let mul = x * y
+                  mul + part2(remaining)
+                }
+                _, _ -> {
+                  part2(remaining)
+                }
+              }
+            }
+            _ -> {
+              part2(remaining)
+            }
+          }
+        }
+      }
+    }
+    "" -> 0
+    other -> {
+      other
+      |> string.drop_start(1)
+      |> part2()
+    }
+  }
 }
