@@ -46,15 +46,19 @@ pub fn main() {
   io.println("")
 }
 
-pub fn example_input() {
-  let nl = "\n"
-  todo
-}
-
 pub fn part1(input: String) {
   todo
+
+  0
 }
 
 pub fn part2(input: String) {
+  todo
+
+  0
+}
+
+pub fn example_input() {
+  let nl = "\n"
   todo
 }
