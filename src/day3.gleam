@@ -1,8 +1,6 @@
 import aoc24/lib
 import gleam/int
 import gleam/io
-import gleam/list
-import gleam/option.{type Option, None, Some}
 import gleam/string
 
 pub fn main() {
