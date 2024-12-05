@@ -1,10 +1,8 @@
 import aoc24/lib.{str}
-import gleam/dict
-import gleam/float
 import gleam/int
 import gleam/io
 import gleam/list
-import gleam/option.{type Option, None, Some}
+import gleam/option.{Some}
 import gleam/string
 
 pub fn main() {
@@ -20,21 +18,11 @@ pub fn main() {
 
   io.println("")
 
-  // let ex_p2 = example_input() |> part2()
-  // io.println(
-  //   "[day "
-  //   <> str(day)
-  //   <> "][part 2] example: "
-  //   <> str(ex_p2),
-  // )
+  let ex_p2 = example_input() |> part2()
+  io.println("[day " <> str(day) <> "][part 2] example: " <> str(ex_p2))
 
-  // let real_p2 = lib.puzzle_input(day) |> part2()
-  // io.println(
-  //   "[day "
-  //   <> str(day)
-  //   <> "][part 2] real: "
-  //   <> str(real_p2),
-  // )
+  let real_p2 = lib.puzzle_input(day) |> part2()
+  io.println("[day " <> str(day) <> "][part 2] real: " <> str(real_p2))
 
   io.println("")
 }
@@ -173,14 +161,6 @@ pub fn part1(input: String) {
                 False -> four_by_four_mask()
               }
             }
-
-          let zip_and_sum = fn(a: List(Int), b: List(Int)) {
-            list.zip(a, b)
-            |> list.map(fn(el) {
-              let #(l, r) = el
-              l + r
-            })
-          }
 
           let combined =
             row_lines
@@ -379,32 +359,167 @@ pub fn part1(input: String) {
       }
     })
 
-  let #(hashes, mask) = xmas
-
-  let masked =
-    list.zip(chars, mask)
-    |> list.map(fn(el) {
-      let #(char, n) = el
-      case n == 0 {
-        True -> "."
-        False -> char
-      }
-    })
+  let #(hashes, _) = xmas
 
   list.length(list.unique(hashes))
 }
 
 pub fn part2(input: String) {
-  todo
+  let chars =
+    string.to_graphemes(input)
+    |> list.filter(fn(char) { char != "\n" })
+
+  let lines =
+    input
+    |> string.trim
+    |> string.split("\n")
+    |> list.map(string.trim)
+
+  let assert [first_line, ..] = lines
+
+  let cols = string.length(first_line) |> int.to_float
+  let rows = list.length(lines) |> int.to_float
+
+  let get_row_col = fn(index: Int) -> #(Int, Int) {
+    let row = { int.to_float(index) /. cols } |> lib.ftoi
+    let col = index % lib.ftoi(rows)
+    #(row, col)
+  }
+
+  let init_mask = fn() { list.map(chars, fn(_) { 0 }) }
+
+  let max_col = lib.ftoi(cols) - 3
+  let max_row = lib.ftoi(rows) - 3
+
+  let xmas =
+    chars
+    |> list.index_fold(#([], init_mask()), fn(acc, _, index) {
+      let #(hashes, mask) = acc
+
+      let #(row, col) = get_row_col(index)
+
+      case col > max_col || row > max_row {
+        True -> acc
+        False -> {
+          let assert Some(line1) = lib.item_at(lines, row)
+          let assert Some(line2) = lib.item_at(lines, row + 1)
+          let assert Some(line3) = lib.item_at(lines, row + 2)
+
+          let line1 = string.slice(line1, at_index: col, length: 3)
+          let line2 = string.slice(line2, at_index: col, length: 3)
+          let line3 = string.slice(line3, at_index: col, length: 3)
+
+          let check_xmas = fn(str: String) {
+            case str {
+              "MAS" | "SAM" -> True
+              _ -> False
+            }
+          }
+
+          let dia_right =
+            [
+              lib.item_at_def(string.to_graphemes(line1), 0),
+              lib.item_at_def(string.to_graphemes(line2), 1),
+              lib.item_at_def(string.to_graphemes(line3), 2),
+            ]
+            |> string.join("")
+            |> check_xmas
+            |> fn(val) {
+              case val {
+                True -> list.flatten([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+                False -> three_by_three_mask()
+              }
+            }
+
+          let dia_left =
+            [
+              lib.item_at_def(string.to_graphemes(line1), 2),
+              lib.item_at_def(string.to_graphemes(line2), 1),
+              lib.item_at_def(string.to_graphemes(line3), 0),
+            ]
+            |> string.join("")
+            |> check_xmas
+            |> fn(val) {
+              case val {
+                True -> list.flatten([[0, 0, 1], [0, 1, 0], [1, 0, 0]])
+                False -> three_by_three_mask()
+              }
+            }
+
+          let combined = zip_and_sum(dia_left, dia_right)
+
+          let is_cross = case combined {
+            [1, 0, 1, 0, 2, 0, 1, 0, 1] -> True
+            _ -> False
+          }
+          let combined = case is_cross {
+            False -> three_by_three_mask()
+            True -> combined
+          }
+
+          let hashes = case is_cross {
+            False -> hashes
+            True -> {
+              let h =
+                cross_hash(
+                  index,
+                  index + 2,
+                  index + 3 + 1,
+                  index + 3 * 2,
+                  index + 3 * 2 + 2,
+                )
+              [h, ..hashes]
+            }
+          }
+
+          let mask =
+            list.index_fold(combined, mask, fn(acc, cur, local_idx) {
+              let local_row = { int.to_float(local_idx) /. 3.0 } |> lib.ftoi
+              let local_col = local_idx % 3
+
+              let update_row = row + local_row
+              let update_col = col + local_col
+
+              let update_index = update_row * lib.ftoi(cols) + update_col
+              let current = lib.item_at_def(acc, update_index)
+
+              lib.update_at(acc, update_index, current + cur)
+            })
+
+          #(hashes, mask)
+        }
+      }
+    })
+
+  let #(hashes, _) = xmas
+
+  list.length(list.unique(hashes))
 }
 
 fn hash(a: Int, b: Int, c: Int, d: Int) {
   a * 1234 + b * 237 + c * 819 + d * 195
 }
 
+fn cross_hash(a: Int, b: Int, c: Int, d: Int, e: Int) {
+  a * 1234 + b * 237 + c * 819 + d * 195 + e * 410
+}
+
 fn four_by_four_mask() {
   [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
   |> list.flatten
+}
+
+fn three_by_three_mask() {
+  [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+  |> list.flatten
+}
+
+fn zip_and_sum(a: List(Int), b: List(Int)) {
+  list.zip(a, b)
+  |> list.map(fn(el) {
+    let #(l, r) = el
+    l + r
+  })
 }
 
 pub fn example_input() {
