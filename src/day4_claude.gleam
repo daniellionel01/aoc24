@@ -1,5 +1,6 @@
 //// I was not content with my own solution so I asked Claude.ai to
 //// give it a shot. It's solution if quite a bit more concise than mine :(
+//// This is only part 1 though
 ////
 
 import gleam/int
