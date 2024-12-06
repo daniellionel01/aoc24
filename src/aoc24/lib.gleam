@@ -44,6 +44,15 @@ pub fn index_all(items: List(a), cb: fn(a, Int) -> Bool) {
   })
 }
 
+pub fn index_filter(items: List(a), cb: fn(a, Int) -> Bool) {
+  list.index_fold(items, [], fn(acc, cur, index) {
+    case cb(cur, index) {
+      True -> list.append(acc, [cur])
+      False -> acc
+    }
+  })
+}
+
 pub fn index_some(items: List(a), cb: fn(a, Int) -> Bool) {
   case items {
     [] -> True

@@ -7,5 +7,5 @@ import gleam/option.{None, Some}
 import gleam/string
 
 pub fn main() {
-  io.debug(5 / 2)
+  io.debug([1, 2, 3] == [1, 2, 3])
 }
