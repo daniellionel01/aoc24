@@ -35,6 +35,26 @@ pub fn update_at(items: List(a), index: Int, item: a) -> List(a) {
   })
 }
 
+pub fn index_all(items: List(a), cb: fn(a, Int) -> Bool) {
+  list.index_fold(items, True, fn(acc, cur, index) {
+    case acc {
+      False -> False
+      True -> cb(cur, index)
+    }
+  })
+}
+
+pub fn index_some(items: List(a), cb: fn(a, Int) -> Bool) {
+  case items {
+    [] -> True
+    items -> {
+      list.index_fold(items, False, fn(acc, cur, index) {
+        acc || cb(cur, index)
+      })
+    }
+  }
+}
+
 pub fn item_at(items: List(a), index: Int) -> Option(a) {
   case items {
     [] -> None
