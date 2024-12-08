@@ -39,6 +39,5 @@ pub fn part2(input: String) {
 }
 
 pub fn example_input() {
-  let nl = "\n"
   todo
 }
