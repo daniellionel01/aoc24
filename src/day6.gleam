@@ -5,7 +5,6 @@ import gleam/int
 import gleam/io
 import gleam/list
 import gleam/option.{None, Some}
-import gleam/otp/task
 import gleam/result
 import gleam/string
 

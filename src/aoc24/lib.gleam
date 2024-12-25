@@ -80,3 +80,15 @@ pub fn item_at_def(items: List(a), index: Int) -> a {
   let assert Some(value) = item_at(items, index)
   value
 }
+
+pub fn factorial(x: Int) -> Int {
+  factorial_loop(x, 1)
+}
+
+fn factorial_loop(x: Int, acc: Int) -> Int {
+  case x {
+    0 -> acc
+    1 -> acc
+    _ -> factorial_loop(x - 1, acc * x)
+  }
+}
